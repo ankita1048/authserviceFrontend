@@ -1,25 +1,97 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { PublicAuthGuard } from "./components/PublicAuthGuard";
+import { useLogin } from "./hooks/uselogin";
+import { Controller, useForm } from "react-hook-form";
+import { useAuthValidation } from "./hooks/useAuthValidation";
+import { AuthConfigProvider } from "./components/AuthConfigProvider";
+
+function DemoLoginPage() {
+  const { pending, error, onSubmit } = useLogin();
+  const {
+    bindField,
+    errors: fieldErrors,
+    touched,
+  } = useAuthValidation<{
+    email: string;
+    password: string;
+  }>();
+  console.log({ fieldErrors, touched, error });
+
+  const { control, handleSubmit } = useForm<{
+    email: string;
+    password: string;
+  }>({
+    defaultValues: { email: undefined, password: undefined },
+  });
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Controller
+        name="email"
+        control={control}
+        render={({ field }) => (
+          <div>
+            <input placeholder="Email" {...bindField(field, "email")} />
+            {fieldErrors.email && (
+              <span style={{ color: "red" }}>{fieldErrors.email}</span>
+            )}
+          </div>
+        )}
+      />
+      <Controller
+        name="password"
+        control={control}
+        render={({ field }) => (
+          <div>
+            <input placeholder="Password" {...bindField(field, "password")} />
+            {fieldErrors.password && (
+              <span style={{ color: "red" }}>{fieldErrors.password}</span>
+            )}
+          </div>
+        )}
+      />
+      <button type="submit" disabled={pending}>
+        Login
+      </button>
+    </form>
+  );
+}
+
+function DemoLoginPageWrapper() {
+  const authConfig = {
+    baseUrl: "https://onboarding.lern360.antiers.work",
+    loginUrl: "/api/v1/identity/admin/login",
+    defaultTimeout: 5000,
+  };
+
+  return (
+    <AuthConfigProvider config={authConfig}>
+      <DemoLoginPage />
+    </AuthConfigProvider>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<DemoLoginPageWrapper />} />
+        <Route path="/" element={<DemoLoginPageWrapper />} />
+        <Route
+          path="/otp"
+          element={
+            <PublicAuthGuard allowedFrom={["/login", "/forgot-password"]}>
+              <div>OTP Page</div>
+            </PublicAuthGuard>
+          }
+        />
+        <Route path="/signup" element={<div>Signup Page</div>} />
+        <Route
+          path="/forgot-password"
+          element={<div>Forgot Password Page</div>}
+        />
+      </Routes>
+    </Router>
   );
 }
 
