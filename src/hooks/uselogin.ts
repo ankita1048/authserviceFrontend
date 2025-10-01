@@ -7,7 +7,7 @@ import { useAuthConfig } from "../components/AuthConfigProvider";
 type LoginPayload = { email: string; password: string };
 
 const useLogin = () => {
-    const { baseUrl, defaultTimeout } = useAuthConfig();
+    const { baseUrl } = useAuthConfig();
     console.log({ baseUrl })
     const [pending, setPending] = useState(false);
     const [error, setError] = useState<ApiError | string | null>(null);
