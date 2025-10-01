@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PublicAuthGuard } from "./components/PublicAuthGuard";
-import { useLogin } from "./hooks/uselogin";
 import { Controller, useForm } from "react-hook-form";
-import { useAuthValidation } from "./hooks/useAuthValidation";
-import { AuthConfigProvider } from "./components/AuthConfigProvider";
+import AuthConfigProvider from "./components/AuthConfigProvider";
+import useFieldValidation from "./hooks/useAuthValidation";
+
+import useLogin from "./hooks/uselogin";
 
 function DemoLoginPage() {
   const { pending, error, onSubmit } = useLogin();
@@ -11,7 +12,7 @@ function DemoLoginPage() {
     bindField,
     errors: fieldErrors,
     touched,
-  } = useAuthValidation<{
+  } = useFieldValidation<{
     email: string;
     password: string;
   }>();

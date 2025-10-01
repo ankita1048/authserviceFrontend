@@ -4,9 +4,10 @@ import { sanitize } from "../utils/sanitize";
 import { validate } from "./useValidation";
 import { capitalize } from "../utils/common";
 
-export const useAuthValidation = <TFieldValues extends Record<string, any>>() => {
+const useFieldValidation = <TFieldValues extends Record<string, any>>() => {
     const [errors, setErrors] = useState<Partial<Record<keyof TFieldValues, string | null>>>({});
     const [touched, setTouched] = useState<Partial<Record<keyof TFieldValues, boolean>>>({});
+    console.log({ errors })
 
     const bindField = <TName extends Path<TFieldValues>>(
         field: ControllerRenderProps<TFieldValues, TName>,
@@ -38,3 +39,5 @@ export const useAuthValidation = <TFieldValues extends Record<string, any>>() =>
 
     return { bindField, errors, touched };
 };
+
+export default useFieldValidation;

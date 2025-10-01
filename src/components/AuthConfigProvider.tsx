@@ -9,7 +9,7 @@ export type AuthConfig = {
 
 const AuthConfigContext = createContext<AuthConfig | null>(null);
 
-export const AuthConfigProvider = ({
+const AuthConfigProvider = ({
   children,
   config,
 }: {
@@ -26,8 +26,11 @@ export const AuthConfigProvider = ({
 // custom hook to access config
 export const useAuthConfig = () => {
   const ctx = useContext(AuthConfigContext);
+  console.log({ ctx });
   if (!ctx) {
     throw new Error("useAuthConfig must be used inside AuthConfigProvider");
   }
   return ctx;
 };
+
+export default AuthConfigProvider;

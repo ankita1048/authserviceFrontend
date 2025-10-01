@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { ApiError, apiFetch } from "../utils/apiFetch";
 import { sanitize } from "../utils/sanitize";
-import { validate } from "./useValidation";
 import { validateAllFieldsFilled } from "../utils/common";
 import { useAuthConfig } from "../components/AuthConfigProvider";
 
 type LoginPayload = { email: string; password: string };
 
-export const useLogin = () => {
+const useLogin = () => {
     const { baseUrl, defaultTimeout } = useAuthConfig();
-
+    console.log({ baseUrl })
     const [pending, setPending] = useState(false);
     const [error, setError] = useState<ApiError | string | null>(null);
 
@@ -46,3 +45,5 @@ export const useLogin = () => {
 
     return { onSubmit, pending, error };
 };
+
+export default useLogin
